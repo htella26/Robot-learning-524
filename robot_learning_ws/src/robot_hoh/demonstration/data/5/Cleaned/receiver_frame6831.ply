@@ -1,0 +1,13 @@
+ply
+format binary_little_endian 1.0
+comment https://github.com/mikedh/trimesh
+element vertex 25
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+property uchar alpha
+end_header
+;ÖC¾92BC©DÒĞÄÿt<Cî>BXµ©Döòçÿ†³CŞ;BÊ©D÷õéÿ–+Cm/8BÃŞ©DÖÓÊÿ†·C[Î1BœªDÍÊÁÿ„EC™m+Bu2ªDÏÈÂÿ™aC©µWBLy©Døíçÿ¡÷CëMNB¸©DíàØÿø~CªéGBİá©DğåßÿXCÂ…AB›ªDşúòÿÆ“C"";BY5ªDüõíÿ¥4Cá»1B/tªDğéãÿ·l!C¼ØdBl’©Dşş÷ÿP­C„ƒjBîg©Dïìãÿ/C gBˆ|©Dùìæÿ¹²CÌ´]B5»©DñßÛÿXJC~ITBàù©DçØÓÿe÷CRÚGB–MªD÷ìèÿ»•Cío>BCŒªDûòíÿ<!C_DqBæª©Døûğÿ¤{CñvB‚€©Dìéàÿ€ëC1sB•©DãÔÏÿaCÍgBè©DşéæÿZ9C£ZB<ªDê×Óÿ‰jCfV}B'Ã©DåÜÕÿ

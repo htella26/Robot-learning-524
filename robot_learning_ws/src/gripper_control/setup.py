@@ -11,7 +11,10 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+         'pymodbus',
+                      ],
     zip_safe=True,
     maintainer='hambal',
     maintainer_email='htella@scu.edu',

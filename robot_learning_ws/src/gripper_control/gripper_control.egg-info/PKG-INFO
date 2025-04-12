@@ -1,0 +1,14 @@
+Metadata-Version: 2.2
+Name: gripper_control
+Version: 0.0.0
+Summary: TODO: Package description
+Maintainer: hambal
+Maintainer-email: htella@scu.edu
+License: TODO: License declaration
+Requires-Dist: setuptools
+Requires-Dist: pymodbus
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary

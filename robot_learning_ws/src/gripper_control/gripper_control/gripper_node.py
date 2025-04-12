@@ -10,7 +10,7 @@ class GripperNode(Node):
         super().__init__('gripper_node')
         
         # Initialize RTDE Control Interface
-        self.rtde_c = RTDEControlInterface("192.168.0.236")  
+        self.rtde_c = RTDEControlInterface("192.168.168.5")  
         self.get_logger().info("RTDE Control Interface connected!")
 
         # Initialize Robotiq Gripper
