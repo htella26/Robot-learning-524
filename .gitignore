@@ -1,3 +1,5 @@
 /robot_learning_ws/build
 /robot_learning_ws/install
 /robot_learning_ws/log
+robot_learning_ws/src/librealsense
+robot_learning_ws/src/ros2_robotiq_gripper
