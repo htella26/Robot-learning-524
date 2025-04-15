@@ -82,7 +82,7 @@ def rollout(policy, env, horizon, render=False, video_writer=None, video_skip=5,
 # --------------------------
 # Run policy and save video to project folder
 # --------------------------
-output_folder = "/home/hambal/robot-learning-practice/videos"
+output_folder = "../demonstration/data_extract"
 os.makedirs(output_folder, exist_ok=True)
 video_path = os.path.join(output_folder, "rollout.mp4")
 video_writer = imageio.get_writer(video_path, fps=20)
@@ -94,7 +94,7 @@ stats = rollout(
     render=False,
     video_writer=video_writer,
     video_skip=5,
-    camera_names=["agentview"]
+    camera_names=["frontview"]
 )
 
 video_writer.close()

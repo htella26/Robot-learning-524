@@ -25,16 +25,24 @@ def load_point_cloud(file_path):
 
 def estimate_pose(points):
     if points.size == 0:
-        return np.array([np.nan, np.nan, np.nan]), tf.Rotation.identity().as_quat()
+        return np.array([np.nan, np.nan, np.nan]), R.identity().as_quat()
+
     eef_pos = np.nanmean(points, axis=0)
     try:
         cov = np.cov(points.T) if points.shape[0] > 2 else np.eye(3)
         eigvals, eigvecs = np.linalg.eigh(cov)
         rotation_matrix = eigvecs[:, ::-1]
-        eef_quat = tf.Rotation.from_matrix(rotation_matrix).as_quat()
+
+        if np.linalg.det(rotation_matrix) < 0:
+            rotation_matrix[:, -1] *= -1
+
+        eef_quat = R.from_matrix(rotation_matrix).as_quat()
+
     except np.linalg.LinAlgError:
-        eef_quat = tf.Rotation.identity().as_quat()
+        eef_quat = R.identity().as_quat()
+
     return eef_pos, eef_quat
+
 
 def estimate_velocity(current_pos, current_quat, current_time):
     global previous_pos, previous_quat, previous_time
@@ -55,6 +63,12 @@ def compute_orientation(points):
     pca = PCA(n_components=3)
     pca.fit(points)
     rotation_matrix = pca.components_.T
+
+    # Check if the rotation matrix is right-handed
+    if np.linalg.det(rotation_matrix) < 0:
+        # Flip the third axis to make it right-handed
+        rotation_matrix[:, -1] *= -1
+
     quat = R.from_matrix(rotation_matrix).as_quat()
     return quat
 
@@ -148,9 +162,9 @@ with h5py.File(hdf5_filename, 'w') as hdf5_file:
     mask_group = hdf5_file.create_group("mask")
 
     for i in range(60):  # Update the range as needed
-        points_current = load_point_cloud(f'data/0/Cleaned/giver_frame{i+489}.ply')
-        object_points_current = load_point_cloud(f'data/0/Cleaned/object_frame{i+489}.ply')
-        object_points_previous = load_point_cloud(f'data/0/Cleaned/object_frame{i+488}.ply') if i > 0 else None
+        points_current = load_point_cloud(f'../data/0/Cleaned/giver_frame{i+489}.ply')
+        object_points_current = load_point_cloud(f'../data/0/Cleaned/object_frame{i+489}.ply')
+        object_points_previous = load_point_cloud(f'../data/0/Cleaned/object_frame{i+488}.ply') if i > 0 else None
 
         if points_current is None or object_points_current is None:
             continue

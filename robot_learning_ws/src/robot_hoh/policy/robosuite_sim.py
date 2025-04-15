@@ -11,7 +11,7 @@ import imageio
 import env
 
 # Set download folder to project directory
-DOWNLOAD_FOLDER = "videos"
+DOWNLOAD_FOLDER = "../demonstration/data_extract"
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 dataset_path = os.path.join(DOWNLOAD_FOLDER, "modified_results.hdf5")
