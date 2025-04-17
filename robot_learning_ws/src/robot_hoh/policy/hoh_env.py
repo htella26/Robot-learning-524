@@ -12,7 +12,7 @@ from robosuite.utils.placement_samplers import UniformRandomSampler
 from robosuite.utils.transform_utils import convert_quat
 
 
-class ColorSortingEnv(ManipulationEnv):
+class HOHEnv(ManipulationEnv):
    
     def __init__(
         self,
