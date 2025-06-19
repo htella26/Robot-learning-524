@@ -1,15 +1,41 @@
 from collections import OrderedDict
 
 import numpy as np
-
+from scipy.spatial.transform import Rotation as R
 from robosuite.environments.manipulation.manipulation_env import ManipulationEnv
-from robosuite.models.arenas import TableArena
-from robosuite.models.objects import BoxObject
+from robosuite.models.arenas import TableArena, HOHArena
+# from robosuite.models.objects import BoxObject
 from robosuite.models.tasks import ManipulationTask
 from robosuite.utils.mjcf_utils import CustomMaterial
 from robosuite.utils.observables import Observable, sensor
 from robosuite.utils.placement_samplers import UniformRandomSampler
 from robosuite.utils.transform_utils import convert_quat
+
+from robosuite.models.objects import MujocoGeneratedObject
+
+from objects.padobject import PadObject
+from objects.gallonobject import GallonObject
+from objects.basketobject import BasketObject
+from objects.bowlobject import BowlObject
+from objects.bottleobject import BottleObject
+from objects.shovelobject import ShovelObject
+from objects.jugobject import JugObject
+from objects.cupobject import CupObject
+from objects.bakingrollerobject import BakingRollerObject
+from objects.towerobject import TowerObject
+from objects.paintrollerobject import PaintRollerObject
+from objects.statueobject import StatueObject
+from objects.strawberryobject import StrawberryObject
+from objects.sheetobject import SheetObject
+from objects.penobject import PenObject
+
+
+'''
+from robosuite.models.objects import (
+    BoxObject,GallonObject, BasketObject, BowlObject, BottleObject, ShovelObject,
+    JugObject, CupObject, BakingRollerObject, TowerObject, PadObject,
+    PaintRollerObject, StatueObject, StrawberryObject, SheetObject, PenObject,
+)'''
 
 
 class HOHEnv(ManipulationEnv):
@@ -21,8 +47,8 @@ class HOHEnv(ManipulationEnv):
         controller_configs=None,
         gripper_types="default",
         initialization_noise="default",
-        table_full_size=(0.8, 0.8, 0.05),
-        table_friction=(1.0, 5e-3, 1e-4),
+        table_full_size=(0.5, 0.4),
+        table_friction=(1.0, 5e-3),
         use_camera_obs=True,
         use_object_obs=True,
         reward_scale=1.0,
@@ -38,12 +64,13 @@ class HOHEnv(ManipulationEnv):
         horizon=1000,
         ignore_done=False,
         hard_reset=True,
-        camera_names="agentview",
-        camera_heights=256,
-        camera_widths=256,
+        camera_names="frontview",
+        camera_heights=300,
+        camera_widths=456,
         camera_depths=False,
         camera_segmentations=None,  # {None, instance, class, element}
         renderer_config=None,
+        object_name="Pad"
     ):
         # settings for table top
         self.table_full_size = table_full_size
@@ -56,6 +83,8 @@ class HOHEnv(ManipulationEnv):
 
         # whether to use ground-truth object states
         self.use_object_obs = use_object_obs
+
+        self.object_name = object_name
 
         # object placement initializer
         self.placement_initializer = placement_initializer
@@ -142,13 +171,45 @@ class HOHEnv(ManipulationEnv):
         """
         super()._load_model()
 
+        # Map names to specific object classes
+        object_class_map = {
+            "Gallon": GallonObject,
+            "Basket": BasketObject,
+            "Bowl": BowlObject,
+            "Bottle": BottleObject,
+            "Shovel": ShovelObject,
+            "Jug": JugObject,
+            "Cup": CupObject,
+            "Baking Roller": BakingRollerObject,
+            "Tower": TowerObject,
+            "Pad": PadObject,
+            "Paint Roller": PaintRollerObject,
+            "Statue": StatueObject,
+            "Strawberry": StrawberryObject,
+            "Sheet": SheetObject,
+            "Pen": PenObject,
+        }
+
         # Adjust base pose accordingly
         xpos = self.robots[0].robot_model.base_xpos_offset["table"](self.table_full_size[0])
         self.robots[0].robot_model.set_base_xpos(xpos)
 
+        rotation_quat = [0, 0, -0.6071, 0.7071]  
+        r = R.from_quat(rotation_quat)  # Quaternion to Rotate robot
+        euler_angles = r.as_euler('xyz', degrees=False) 
+        self.robots[0].robot_model.set_base_ori(euler_angles)
+
         # load model for table top workspace
+        """
         mujoco_arena = TableArena(
             table_full_size=self.table_full_size,
+            table_friction=self.table_friction,
+            table_offset=self.table_offset,
+        )
+        """
+
+        mujoco_arena = HOHArena(
+            table_full_size=(0.25, 0.02),
             table_friction=self.table_friction,
             table_offset=self.table_offset,
         )
@@ -157,14 +218,19 @@ class HOHEnv(ManipulationEnv):
         mujoco_arena.set_origin([0, 0, 0])
         
         robot_x_offset = -0.62  # Move robot to the side
-        self.robots[0].robot_model.set_base_xpos([robot_x_offset, -0.05, 0])
-       
-        self.cube = BoxObject(
-            name="cube",
-            size_min=[0.030, 0.030, 0.030],  # [0.015, 0.015, 0.015],
-            size_max=[0.032, 0.032, 0.032],  # [0.018, 0.018, 0.018])
-            rgba=[0, 0, 1, 1],
-        )
+        self.robots[0].robot_model.set_base_xpos([robot_x_offset, 0.6, -0.20])
+        
+        '''self.cube = BoxObject(
+            name="pad",
+            size_min=[0.10, 0.054, 0.020],  # [0.015, 0.015, 0.015],
+            size_max=[0.12, 0.056, 0.022],  # [0.018, 0.018, 0.018])
+            rgba=[1, 0.02, 1, 1],
+        )'''
+
+        name_key = self.object_name.strip().title()
+        assert name_key in object_class_map, f"Invalid object name: {self.object_name}"
+        self.cube = object_class_map[name_key](name=name_key)
+
 
         # Create placement initializer
         if self.placement_initializer is not None:

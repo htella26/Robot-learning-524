@@ -25,8 +25,8 @@ REGISTERED_ENVS["HOHEnv"] = HOHEnv
 env_metadata = {
     "env_args": {
         "env_name": "HOHEnv",
-        "env_version": "1.4.0",
-        "model_path": "robosuite/robosuite/models/assets/arenas/table_arena.xml",
+        "env_version": "1.0.0",
+        "model_path": "../../../robosuite/robosuite/models/assets/arenas/hoh_arena.xml",
         "type": 1,
         "env_kwargs": {
             "has_renderer": True,
@@ -54,12 +54,13 @@ env_metadata = {
                 "interpolation": None,
                 "ramp_ratio": 0.2
             },
+            "object_name": "basket", # gallon, basket, bowl, bottle, shovel, jug, cup, baking roller, tower, pad, paintroller, statue, strawberry, sheet, and pen
             "robots": ["UR5e"],
             "camera_names": ["frontview"],
-            "camera_heights": 500,
+            "camera_heights": 600,
             "camera_widths": 640,
-            "camera_depths": False,
-            "table_full_size": (0.94, 2.2, 0.05), 
+            "camera_depths": True,
+            "table_full_size": (0.2, 0.4, 0.01), 
             "reward_shaping": False
         }
     },
@@ -120,7 +121,7 @@ with h5py.File(dataset_path, "r") as f:
     # ObsUtils.initialize_obs_utils_with_obs_specs({"obs": {"low_dim": ["robot0_eef_pos"], "rgb": []}})
     
     video_path = os.path.join(DOWNLOAD_FOLDER, "playback.mp4")
-    video_writer = imageio.get_writer(video_path, fps=20)
+    video_writer = imageio.get_writer(video_path, fps=10)
     
     def playback_trajectory(demo_key):
         for action in f[f"data/{demo_key}/actions"][:]:
@@ -132,7 +133,7 @@ with h5py.File(dataset_path, "r") as f:
             env.step(action)
             video_writer.append_data(env.render(mode="rgb_array", height=512, width=512, camera_name="frontview"))
 
-    for demo in demos[:]:
+    for demo in demos[:1]:
         print(f"Playing back {demo}")
         playback_trajectory(demo)
     

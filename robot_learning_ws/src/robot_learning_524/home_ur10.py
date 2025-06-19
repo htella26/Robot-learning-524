@@ -11,8 +11,8 @@ UR_PORT = 30002  # URScript command port
 # Pick and place
 # COMMAND = "movej([4.48, -0.5, 0.8, -2.6, -1.2, 1.0], a=1.0, v=0.2)\n" # 
 COMMAND = "movej([4.35, -0.95, 1.5, -2.1, -1.5, 1.5], a=0.8, v=0.2)\n" # go down to pick
-# COMMAND4 = "movej([4.48, -0.5, 0.8, -2.6, -1.2, 1.0], a=1.0, v=0.2)\n" # go up
-# COMMAND5 = "movej([4.48, -0.5, 1.0, -2.5, -1.2, 1.0], a=1.0, v=0.2)\n" # move to next state
+# COMMAND = "movej([4.48, -0.5, 0.8, -2.6, -1.2, 1.0], a=1.0, v=0.2)\n" # go up
+# COMMAND = "movej([4.48, -0.5, 1.0, -2.5, -1.2, 1.0], a=1.0, v=0.2)\n" # move to next state
 
 # COMMAND = "set_digital_out(0, True)\n"
 # COMMAND = "set_digital_out(0, False)\n"
